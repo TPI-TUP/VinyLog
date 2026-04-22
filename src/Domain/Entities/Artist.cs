@@ -1,5 +1,7 @@
 using System;
 
+namespace Domain.Entities;
+
 public class Artist
 {
     public int Id {get; set;}
