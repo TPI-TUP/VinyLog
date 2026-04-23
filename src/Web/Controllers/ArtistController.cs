@@ -1,5 +1,4 @@
 using Domain.Entities;
-using Application.Models.Requests;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +8,7 @@ namespace Web.Controllers;
 [ApiController]
 public class ArtistController : ControllerBase
 {
-    
+
     private readonly ArtistService _artistService;
 
     public ArtistController(ArtistService artistService)
@@ -18,8 +17,13 @@ public class ArtistController : ControllerBase
     }
 
 
+    [HttpGet]
+    public ActionResult<List<Artist>> GetAll()
+    {
+        return Ok(_artistService.GetAll());
+    }
     [HttpGet("{artistId}", Name = "GetArtist")]
-    public ActionResult<Artist> GetUser(int artistId)
+    public ActionResult<Artist> GetArtist([FromRoute] int artistId)
     {
         var artist = _artistService.GetArtist(artistId);
 
@@ -27,21 +31,43 @@ public class ArtistController : ControllerBase
             return NotFound();
 
         return Ok(artist);
-
     }
 
+
+
     [HttpPost]
-    public ActionResult<Artist> CreateArtist(ArtistCreateRequest newArtist)
+    public ActionResult<Artist> CreateArtist([FromBody] Artist artist)
     {
-        var createdArtist = _artistService.CreateArtist(newArtist);
+
+        var createdArtist = _artistService.CreateArtist(artist);
 
         return CreatedAtRoute(
             "GetArtist",
-            new
-            {
-                artistId = createdArtist.Id
-            },
+            new { artistId = createdArtist.Id },
             createdArtist
         );
     }
+
+    [HttpPut("{artistId}")]
+    public ActionResult<Artist> UpdateArtist(int artistId, [FromBody] Artist artist)
+    {
+        var updated = _artistService.UpdateArtist(artistId, artist);
+
+        if (updated is null)
+            return NotFound();
+
+        return Ok(updated);
+    }
+
+    [HttpDelete("{artistId}")]
+    public ActionResult DeleteArtist(int artistId)
+    {
+        var deleted = _artistService.DeleteArtist(artistId);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
+    }
+
 }
