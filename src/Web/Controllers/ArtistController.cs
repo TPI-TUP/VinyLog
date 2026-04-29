@@ -22,7 +22,7 @@ public class ArtistController : ControllerBase
     {
         return Ok(_artistService.GetAll());
     }
-    [HttpGet("{artistId}", Name = "GetArtist")]
+    [HttpGet("{artistId:int}", Name = "GetArtist")]
     public ActionResult<Artist> GetArtist([FromRoute] int artistId)
     {
         var artist = _artistService.GetArtist(artistId);
@@ -48,7 +48,7 @@ public class ArtistController : ControllerBase
         );
     }
 
-    [HttpPut("{artistId}")]
+    [HttpPut("{artistId:int}")]
     public ActionResult<Artist> UpdateArtist(int artistId, [FromBody] Artist artist)
     {
         var updated = _artistService.UpdateArtist(artistId, artist);
@@ -59,7 +59,7 @@ public class ArtistController : ControllerBase
         return Ok(updated);
     }
 
-    [HttpDelete("{artistId}")]
+    [HttpDelete("{artistId:int}")]
     public ActionResult DeleteArtist(int artistId)
     {
         var deleted = _artistService.DeleteArtist(artistId);
