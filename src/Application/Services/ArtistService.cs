@@ -1,26 +1,31 @@
 using Domain.Entities;
+using Infrastructure.Data;
 
 namespace Application.Services;
 
 public class ArtistService
 {
-    private static List<Artist> _artistList = new List<Artist>();
-    private static int _nextId = 1;
+    private readonly ApplicationContext _context;
+
+    public ArtistService(ApplicationContext context)
+    {
+        _context = context;
+    }
+
     public Artist CreateArtist(Artist artistRequest)
     {
         var newArtist = new Artist
         {
-            Id = _nextId++,
             Name = artistRequest.Name,
             DateBirthday = artistRequest.DateBirthday,
             Country = artistRequest.Country,
             Description = artistRequest.Description
         };
 
-        _artistList.Add(newArtist);
+        _context.Artists.Add(newArtist);
+        _context.SaveChanges();
 
         return newArtist;
-
     }
 
     public List<Artist> GetAll()
