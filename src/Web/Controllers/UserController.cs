@@ -1,36 +1,74 @@
-// using Microsoft.AspNetCore.Mvc;
+using Domain.Entities;
+using Application.Services;
+using Microsoft.AspNetCore.Mvc;
 
-// namespace User.Web.Controllers;
+namespace Web.Controllers;
 
-// [Route("api/users")]
-// [ApiController]
-// public class UserController : ControllerBase
-// {
+[Route("api/users")]
+[ApiController]
+public class UserController : ControllerBase
+{
 
-//     [HttpGet("{userId}", Name = "GetUser")]
-//     public ActionResult<UserDto> GetUser(int userId)
-//     {
-//         var user = _userService.GetUser(userId);
+    private readonly UserService _userService;
 
-//         if (user is null)
-//             return NotFound();
+    public UserController(UserService userService)
+    {
+        _userService = userService;
+    }
 
-//         return Ok(user);
+    [HttpGet]
+    public ActionResult<List<User>> GetAll()
+    {
+        return Ok(_userService.GetAll());
+    }
+    [HttpGet("{userId:int}", Name = "GetUser")]
+    public ActionResult<User> GetUser([FromRoute] int userId)
+    {
+        var user = _userService.GetUser(userId);
 
-//     }
+        if (user is null)
+            return NotFound();
 
-//     [HttpPost]
-//     public ActionResult<UserDto> CreateUser(UserCreateRequest newUser)
-//     {
-//         var createdUser = _userService.CreateUser(newUser);
+        return Ok(user);
 
-//         return CreatedAtRoute(
-//             "GetUser",
-//             new
-//             {
-//                 userId = createdUser.Id
-//             },
-//             createdUser
-//         );
-//     }
-// }
+    }
+
+    [HttpPost]
+    public ActionResult<User> CreateUser([FromBody] User user)
+    {
+        var createdUser = _userService.CreateUser(user);
+
+        return CreatedAtRoute(
+            "GetUser",
+            new
+            {
+                userId = createdUser.Id
+            },
+            createdUser
+        );
+    }
+
+
+    [HttpPut("{userId:int}")]
+    public ActionResult<User> UpdateUser(int userId, [FromBody] User user)
+    {
+        var updated = _userService.UpdateUser(userId, user);
+
+        if (updated is null)
+            return NotFound();
+
+        return Ok(updated);
+    }
+
+    [HttpDelete("{userId:int}")]
+    public ActionResult DeleteUser(int userId)
+    {
+        var deleted = _userService.DeleteUser(userId);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
+    }
+
+}
