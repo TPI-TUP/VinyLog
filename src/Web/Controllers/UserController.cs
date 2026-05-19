@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Application.Models;
 
 namespace Web.Controllers;
 
@@ -17,10 +18,16 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<User>> GetAll()
+    public ActionResult<List<UserDto>> GetAll()
     {
-        return Ok(_userService.GetAll());
+        var users = _userService.GetAll();
+
+        var usersDto = users.Select(UserDto.Create);
+
+        return Ok(usersDto);
     }
+
+
     [HttpGet("{userId:int}", Name = "GetUser")]
     public ActionResult<User> GetUser([FromRoute] int userId)
     {
