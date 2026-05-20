@@ -2,6 +2,7 @@ using Application.Services;
 using Application.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Infrastructure.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces;
