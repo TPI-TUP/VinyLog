@@ -4,5 +4,5 @@ namespace Application.Interfaces;
 
 public interface ICustomAuthenticationService
 {
-    string Autenticar(AuthenticationRequest autheticationRequest);
+    string Autenticar(AuthenticationRequest authenticationRequest);
 }

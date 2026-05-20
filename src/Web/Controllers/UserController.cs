@@ -1,5 +1,5 @@
 using Domain.Entities;
-using Application.Services;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Application.Models;
 
@@ -10,9 +10,9 @@ namespace Web.Controllers;
 public class UserController : ControllerBase
 {
 
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public UserController(UserService userService)
+    public UserController(IUserService userService)
     {
         _userService = userService;
     }

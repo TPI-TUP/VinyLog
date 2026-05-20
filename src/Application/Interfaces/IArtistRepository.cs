@@ -4,13 +4,9 @@ namespace Application.Interfaces;
 
 public interface IArtistRepository
 {
-    Artist CreateArtist(Artist artist);
-
-    List<Artist> GetAll();
-
-    Artist? GetArtist(int id);
-
-    Artist? UpdateArtist(int id, Artist artist);
-
-    bool DeleteArtist(int id);
+    Task AddAsync(Artist artist);
+    Task<List<Artist>> ListAsync();
+    Task<Artist?> GetByIdAsync(int id);
+    Task UpdateAsync(Artist artist);
+    Task DeleteAsync(Artist artist);
 }
