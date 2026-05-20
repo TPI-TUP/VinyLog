@@ -13,63 +13,43 @@ public class ArtistService
         _artistRepository = artistRepository;
     }
 
-    public Artist CreateArtist(Artist artistRequest)
+    public async Task<Artist> CreateArtist(Artist artistRequest)
     {
-
-        return _artistRepository.CreateArtist(artistRequest);
-        // var newArtist = new Artist
-        // {
-        //     Name = artistRequest.Name,
-        //     DateBirthday = artistRequest.DateBirthday,
-        //     Country = artistRequest.Country,
-        //     Description = artistRequest.Description
-        // };
-
-        // _context.Artists.Add(newArtist);
-        // _context.SaveChanges();
-
-        // return newArtist;
+        await _artistRepository.AddAsync(artistRequest);
+        return artistRequest;
     }
 
-    public List<Artist> GetAll()
+    public async Task<List<Artist>> GetAll()
     {
-        return _artistRepository.GetAll();
+        return await _artistRepository.ListAsync();
     }
 
-    public Artist? GetArtist(int id)
+    public async Task<Artist?> GetArtist(int id)
     {
-        return _artistRepository.GetArtist(id);
+        return await _artistRepository.GetByIdAsync(id);
     }
 
-    public Artist? UpdateArtist(int id, Artist updatedArtist)
+    public async Task<Artist?> UpdateArtist(int id, Artist updatedArtist)
     {
+        var artist = await _artistRepository.GetByIdAsync(id);
+        if (artist == null) return null;
 
-        return _artistRepository.UpdateArtist(id, updatedArtist);
-        // var artist = _context.Artists.FirstOrDefault(a => a.Id == id);
+        artist.Name = updatedArtist.Name;
+        artist.DateBirthday = updatedArtist.DateBirthday;
+        artist.Country = updatedArtist.Country;
+        artist.Description = updatedArtist.Description;
 
-        // if (artist == null) return null;
-
-        // artist.Name = updatedArtist.Name;
-        // artist.DateBirthday = updatedArtist.DateBirthday;
-        // artist.Country = updatedArtist.Country;
-        // artist.Description = updatedArtist.Description;
-
-        // _context.SaveChanges();
-
-        // return artist;
+        await _artistRepository.UpdateAsync(artist);
+        return artist;
     }
 
-    public bool DeleteArtist(int id)
+    public async Task<bool> DeleteArtist(int id)
     {
+        var artist = await _artistRepository.GetByIdAsync(id);
+        if (artist == null) return false;
 
-        return _artistRepository.DeleteArtist(id);
-        // var artist = _context.Artists.FirstOrDefault(a => a.Id == id);
-
-        // if (artist == null) return false;
-
-        // _context.Artists.Remove(artist);
-        // _context.SaveChanges();
-        // return true;
+        await _artistRepository.DeleteAsync(artist);
+        return true;
     }
 
 }
