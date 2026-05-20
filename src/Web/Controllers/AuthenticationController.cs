@@ -1,8 +1,6 @@
-using Domain.Entities;
-using Application.Services;
-using Microsoft.AspNetCore.Mvc;
-using Application.Models;
 using Application.Interfaces;
+using Application.Models.Requests;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
 
@@ -11,10 +9,12 @@ namespace Web.Controllers;
 
 public class AuthenticationController : ControllerBase
 {
+    private readonly IConfiguration _config;
     private readonly ICustomAuthenticationService _customAuthenticationService;
 
     public AuthenticationController(IConfiguration config, ICustomAuthenticationService authenticationService)
     {
+        _config = config;
         _customAuthenticationService = authenticationService;
     }
 
@@ -25,7 +25,5 @@ public class AuthenticationController : ControllerBase
 
         return Ok(token);
     }
-
-
 
 }
