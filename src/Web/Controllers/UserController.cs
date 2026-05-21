@@ -2,6 +2,7 @@ using Domain.Entities;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Application.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
@@ -17,6 +18,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    [Authorize]
     [HttpGet]
     public ActionResult<List<UserDto>> GetAll()
     {
