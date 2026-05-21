@@ -1,15 +1,87 @@
 using Application.Services;
+using Application.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Services;
+using Infrastructure.Repositories;
+using Domain.Interfaces;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<ArtistService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddScoped<ArtistService>();
+builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICustomAuthenticationService, AutenticacionService>();
+
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        // 1. EQUIVALENTE A: setupAction.AddSecurityDefinition("ApiBearerAuth", ...)
+        var schemeName = "ApiBearerAuth";
+
+        var securityScheme = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer", // .NET 10 requiere minúsculas para estándares de OpenAPI 3.1
+            BearerFormat = "JWT",
+            Description = "Acá pegar el token generado al loguearse."
+        };
+
+        // Instanciar componentes si vienen nulos y añadir la definición
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+        document.Components.SecuritySchemes[schemeName] = securityScheme;
+
+        // 2. EQUIVALENTE A: setupAction.AddSecurityRequirement(...)
+        // CAMBIO CRÍTICO .NET 10: Desaparece 'Reference = new OpenApiReference...'.
+        // Ahora se usa 'OpenApiSecuritySchemeReference' pasándole el nombre y el documento raíz.
+        var schemeReference = new OpenApiSecuritySchemeReference(schemeName, document);
+
+        var requirement = new OpenApiSecurityRequirement
+        {
+            [schemeReference] = [] // Sintaxis limpia para los alcances (scopes)
+        };
+
+        // Asignar el requerimiento de seguridad de forma global al documento
+        document.Security = new List<OpenApiSecurityRequirement> { requirement };
+
+        return Task.CompletedTask;
+    });
+});
+
+
+
+builder.Services.AddAuthentication("Bearer")
+   .AddJwtBearer(options =>
+   {
+       var secretKey =
+       builder.Configuration["Authentication:SecretForKey"]
+       ?? throw new InvalidOperationException(
+           "SecretForKey no está configurada.");
+       options.TokenValidationParameters = new TokenValidationParameters
+       {
+           ValidateIssuer = true,
+           ValidateAudience = true,
+           ValidateIssuerSigningKey = true,
+           ValidIssuer = builder.Configuration["Authentication:Issuer"],
+           ValidAudience = builder.Configuration["Authentication:Audience"],
+           IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey))
+       };
+   });
+
+builder.Services.Configure<AutenticacionService.AutenticacionServiceOptions>(builder.Configuration.GetSection("Authentication"));
+
 
 // Configure the SQLite Connection
 var connection = new SqliteConnection("Data Source=VinyLogDataBase.db");
@@ -27,6 +99,7 @@ builder.Services.AddDbContext<ApplicationContext>(dbContextOptions => dbContextO
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -37,6 +110,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

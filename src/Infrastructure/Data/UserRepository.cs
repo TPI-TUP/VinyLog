@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
 
@@ -9,8 +10,8 @@ public class UserRepository : EfRepository<User>, IUserRepository
     {
     }
 
-    public User? GetUserByUsername(string username)
+    public async Task<User?> GetUserByUsernameAsync(string username)
     {
-        return _context.Users.SingleOrDefault(p => p.Username == username);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 }

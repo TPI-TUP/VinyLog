@@ -1,15 +1,16 @@
+using Application.Interfaces;
 using Domain.Entities;
-using Infrastructure.Data;
+using Domain.Interfaces;
 
 namespace Application.Services;
 
-public class UserService
+public class UserService : IUserService
 {
-    private readonly ApplicationContext _context;
+    private readonly IUserRepository _userRepository;
 
-    public UserService(ApplicationContext context)
+    public UserService(IUserRepository userRepository)
     {
-        _context = context;
+        _userRepository = userRepository;
     }
 
     public User CreateUser(User userRequest)
@@ -22,47 +23,63 @@ public class UserService
             Role = userRequest.Role
         };
 
-        _context.Users.Add(newUser);
-        _context.SaveChanges();
+        _userRepository.AddAsync(newUser).Wait();
 
         return newUser;
     }
 
     public List<User> GetAll()
     {
-        return _context.Users.ToList();
+        return _userRepository
+            .ListAsync()
+            .Result;
     }
 
     public User? GetUser(int id)
     {
-        return _context.Users.FirstOrDefault(a => a.Id == id);
+        return _userRepository
+            .GetByIdAsync(id)
+            .Result;
     }
 
-    public User? UpdateUser(int id, User updatedUser)
+    public User? UpdateUser(
+        int id,
+        User updatedUser)
     {
-        var user = _context.Users.FirstOrDefault(a => a.Id == id);
+        var user =
+            _userRepository
+                .GetByIdAsync(id)
+                .Result;
 
-        if (user == null) return null;
+        if (user == null)
+        {
+            return null;
+        }
 
         user.Username = updatedUser.Username;
         user.Email = updatedUser.Email;
         user.Password = updatedUser.Password;
         user.Role = updatedUser.Role;
 
-        _context.SaveChanges();
+        _userRepository.UpdateAsync(user).Wait();
 
         return user;
     }
 
     public bool DeleteUser(int id)
     {
-        var user = _context.Users.FirstOrDefault(a => a.Id == id);
+        var user =
+            _userRepository
+                .GetByIdAsync(id)
+                .Result;
 
-        if (user == null) return false;
+        if (user == null)
+        {
+            return false;
+        }
 
-        _context.Users.Remove(user);
-        _context.SaveChanges();
+        _userRepository.DeleteAsync(user).Wait();
+
         return true;
     }
-
 }

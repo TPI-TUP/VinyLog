@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
@@ -18,14 +19,14 @@ public class ArtistController : ControllerBase
 
 
     [HttpGet]
-    public ActionResult<List<Artist>> GetAll()
+    public async Task<ActionResult<List<Artist>>> GetAll()
     {
-        return Ok(_artistService.GetAll());
+        return Ok(await _artistService.GetAll());
     }
     [HttpGet("{artistId:int}", Name = "GetArtist")]
-    public ActionResult<Artist> GetArtist([FromRoute] int artistId)
+    public async Task<ActionResult<Artist>> GetArtist([FromRoute] int artistId)
     {
-        var artist = _artistService.GetArtist(artistId);
+        var artist = await _artistService.GetArtist(artistId);
 
         if (artist is null)
             return NotFound();
@@ -34,12 +35,12 @@ public class ArtistController : ControllerBase
     }
 
 
-
+    [Authorize]
     [HttpPost]
-    public ActionResult<Artist> CreateArtist([FromBody] Artist artist)
+    public async Task<ActionResult<Artist>> CreateArtist([FromBody] Artist artist)
     {
 
-        var createdArtist = _artistService.CreateArtist(artist);
+        var createdArtist = await _artistService.CreateArtist(artist);
 
         return CreatedAtRoute(
             "GetArtist",
@@ -49,9 +50,9 @@ public class ArtistController : ControllerBase
     }
 
     [HttpPut("{artistId:int}")]
-    public ActionResult<Artist> UpdateArtist(int artistId, [FromBody] Artist artist)
+    public async Task<ActionResult<Artist>> UpdateArtist(int artistId, [FromBody] Artist artist)
     {
-        var updated = _artistService.UpdateArtist(artistId, artist);
+        var updated = await _artistService.UpdateArtist(artistId, artist);
 
         if (updated is null)
             return NotFound();
@@ -60,9 +61,9 @@ public class ArtistController : ControllerBase
     }
 
     [HttpDelete("{artistId:int}")]
-    public ActionResult DeleteArtist(int artistId)
+    public async Task<ActionResult> DeleteArtist(int artistId)
     {
-        var deleted = _artistService.DeleteArtist(artistId);
+        var deleted = await _artistService.DeleteArtist(artistId);
 
         if (!deleted)
             return NotFound();

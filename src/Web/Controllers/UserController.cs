@@ -1,6 +1,8 @@
 using Domain.Entities;
-using Application.Services;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Application.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
@@ -9,18 +11,25 @@ namespace Web.Controllers;
 public class UserController : ControllerBase
 {
 
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public UserController(UserService userService)
+    public UserController(IUserService userService)
     {
         _userService = userService;
     }
 
+    [Authorize]
     [HttpGet]
-    public ActionResult<List<User>> GetAll()
+    public ActionResult<List<UserDto>> GetAll()
     {
-        return Ok(_userService.GetAll());
+        var users = _userService.GetAll();
+
+        var usersDto = users.Select(UserDto.Create);
+
+        return Ok(usersDto);
     }
+
+
     [HttpGet("{userId:int}", Name = "GetUser")]
     public ActionResult<User> GetUser([FromRoute] int userId)
     {
