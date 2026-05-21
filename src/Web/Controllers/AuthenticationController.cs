@@ -17,9 +17,9 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("authenticate")]
-    public ActionResult<string> Autenticar(AuthenticationRequest authenticationRequest)
+    public async Task<IActionResult> Autenticar(AuthenticationRequest authenticationRequest)
     {
-        string token = _customAuthenticationService.Autenticar(authenticationRequest);
+        string token = await _customAuthenticationService.Autenticar(authenticationRequest);
 
         return Ok(token);
     }

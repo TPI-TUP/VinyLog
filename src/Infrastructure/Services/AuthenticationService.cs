@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Services;
 
@@ -14,26 +15,32 @@ public class AutenticacionService
 {
     private readonly IUserRepository _userRepository;
 
-    private const string SECRET_KEY =
-        "ESTA_ES_UNA_CLAVE_SUPER_SECRETA_123456";
+    private readonly AutenticacionServiceOptions _options;
 
     public AutenticacionService(
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+
+        IOptions<AutenticacionServiceOptions> options)
     {
         _userRepository = userRepository;
+        _options = options.Value;
     }
 
-    private User? ValidateUser(
+
+    // Metodo para validar User
+    private async Task<User?> ValidateUser(
         AuthenticationRequest authenticationRequest)
     {
+        // Buscar User en BBDD por Username
         var user =
-            _userRepository.GetUserByUsername(
+           await _userRepository.GetUserByUsernameAsync(
                 authenticationRequest.Username);
 
         if (user == null)
         {
             return null;
         }
+        //  ¿¿ Validar Pw : es seguro de esta forma ??
 
         if (user.Password != authenticationRequest.Password)
         {
@@ -42,24 +49,24 @@ public class AutenticacionService
 
         return user;
     }
-
-    public string Autenticar(AuthenticationRequest authenticationRequest)
+    // Metodo Autenticar: recibe Username y Pw y devuelve JWT
+    public async Task<string> Autenticar(AuthenticationRequest authenticationRequest)
     {
-        var user = ValidateUser(authenticationRequest);
+        var user = await ValidateUser(authenticationRequest);
 
         if (user == null)
         {
-            throw new Exception(
+            throw new UnauthorizedAccessException(
                 "User authentication failed");
         }
+        // Obtener secret key desde configuracion
+        var secretKey = _options.SecretForKey ?? throw new InvalidOperationException("Authentication secret key no está configurada.");
 
-        var key =
-            new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(SECRET_KEY));
+        var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
 
         var credentials =
             new SigningCredentials(
-                key,
+                securityPassword,
                 SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
@@ -76,16 +83,29 @@ public class AutenticacionService
                 ClaimTypes.Role,
                 user.Role.ToString())
         };
-
+        // Crear token
         var token =
             new JwtSecurityToken(
-                issuer: "VinyLogAPI",
-                audience: "VinyLogUsers",
+                issuer: _options.Issuer,
+                audience: _options.Audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credentials);
 
-        return new JwtSecurityTokenHandler()
-            .WriteToken(token);
+        var tokenToReturn = new JwtSecurityTokenHandler()
+                //Pasar el token a string
+                .WriteToken(token);
+
+        return tokenToReturn.ToString();
     }
+
+    public class AutenticacionServiceOptions
+    {
+        public const string AutenticacionService = "AutenticacionService";
+
+        public string Issuer { get; set; }
+        public string Audience { get; set; }
+        public string SecretForKey { get; set; }
+    }
+
 }
