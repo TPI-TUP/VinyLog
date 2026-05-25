@@ -1,6 +1,7 @@
 using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Application.Interfaces;
 
 namespace Web.Controllers;
 
@@ -8,9 +9,9 @@ namespace Web.Controllers;
 [Route("api/albums")]
 public class AlbumController : ControllerBase
 {
-    private readonly AlbumService _albumService;
+    private readonly IAlbumService _albumService;
 
-    public AlbumController(AlbumService albumService)
+    public AlbumController(IAlbumService albumService)
     {
         _albumService = albumService;
     }
@@ -23,7 +24,7 @@ public class AlbumController : ControllerBase
         return Ok(albums);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var album = await _albumService.GetByIdAsync(id);
@@ -41,12 +42,12 @@ public class AlbumController : ControllerBase
         [FromBody] Album album)
     {
         var createdAlbum = await _albumService
-            .AddAsync(album, "Nirvana");
+            .AddAsync(album);
 
         return Ok(createdAlbum);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
         [FromBody] Album album)

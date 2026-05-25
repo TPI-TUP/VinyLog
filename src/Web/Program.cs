@@ -21,6 +21,7 @@ builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ICustomAuthenticationService, AutenticacionService>();
 builder.Services.AddHttpClient<IYoutubeService, YoutubeService>();
 

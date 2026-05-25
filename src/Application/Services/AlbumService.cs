@@ -4,7 +4,7 @@ using Domain.Interfaces;
 
 namespace Application.Services;
 
-public class AlbumService
+public class AlbumService : IAlbumService
 {
     private readonly IAlbumRepository _albumRepository;
     private readonly IYoutubeService _youtubeService;
@@ -26,12 +26,12 @@ public class AlbumService
         return await _albumRepository.GetByIdAsync(id);
     }
 
-    public async Task<Album> AddAsync(Album album, string artistName)
+    public async Task<Album> AddAsync(Album album)
     {
         var videoId = await _youtubeService
             .SearchAlbumVideoAsync(
                 album.Name,
-                artistName);
+                album.ArtistName);
 
         album.YoutubeVideoId = videoId;
 

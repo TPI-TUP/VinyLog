@@ -20,5 +20,7 @@ public class Album
 
     public double AverageRating { get; set; }
 
-    public int IdArtist { get; set; }
+    // public int IdArtist { get; set; }
+    public string ArtistName { get; set; }
+
 }

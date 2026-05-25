@@ -19,7 +19,8 @@ public class AlbumDto
 
     public double AverageRating { get; set; }
 
-    public int IdArtist { get; set; }
+    // public int IdArtist { get; set; }
+    public string ArtistName { get; set; }
 
     public static AlbumDto Create(Album album)
     {
@@ -32,7 +33,8 @@ public class AlbumDto
         dto.Image = album.Image;
         dto.YoutubeVideoId = album.YoutubeVideoId;
         dto.AverageRating = album.AverageRating;
-        dto.IdArtist = album.IdArtist;
+        // dto.IdArtist = album.IdArtist;
+        dto.ArtistName = album.ArtistName;
 
         return dto;
     }

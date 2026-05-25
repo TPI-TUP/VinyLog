@@ -9,8 +9,7 @@ public interface IAlbumService
     Task<Album?> GetByIdAsync(int id);
 
     Task<Album> AddAsync(
-        Album album,
-        string artistName);
+        Album album);
 
     Task UpdateAsync(Album album);
 
