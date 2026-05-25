@@ -23,7 +23,7 @@ public class UserService : IUserService
             Role = userRequest.Role
         };
 
-        _userRepository.CreateAsync(newUser).Wait();
+        _userRepository.AddAsync(newUser).Wait();
 
         return newUser;
     }

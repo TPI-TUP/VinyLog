@@ -23,7 +23,7 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
         return await _dbContext.Set<T>().ToListAsync(cancellationToken);
     }
 
-    public virtual async Task<T> CreateAsync(T entity, CancellationToken cancellationToken = default)
+    public virtual async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         _dbContext.Set<T>().Add(entity);
 

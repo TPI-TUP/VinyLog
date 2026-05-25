@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
-[Route("api/users")]
 [ApiController]
+[Route("api/users")]
 public class UserController : ControllerBase
 {
 

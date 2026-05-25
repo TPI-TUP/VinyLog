@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
 
-[Route("api/authentication")]
 [ApiController]
+[Route("api/authentication")]
 
 public class AuthenticationController : ControllerBase
 {
