@@ -62,7 +62,7 @@ public class AlbumController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         await _albumService.DeleteAsync(id);
