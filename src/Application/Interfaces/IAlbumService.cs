@@ -1,17 +1,19 @@
 using Domain.Entities;
+using Application.Models;
+using Application.Models.Requests;
 
 namespace Application.Interfaces;
 
 public interface IAlbumService
 {
-    Task<List<Album>> GetAllAsync();
+    Task<List<AlbumDto>> GetAllAsync();
 
-    Task<Album?> GetByIdAsync(int id);
+    Task<AlbumDto?> GetByIdAsync(int id);
 
-    Task<Album> AddAsync(
-        Album album);
+    Task<AlbumDto> AddAsync(
+        CreateAlbumDto dto);
 
-    Task UpdateAsync(Album album);
+    Task UpdateAsync(int id, UpdateAlbumDto dto);
 
     Task DeleteAsync(int id);
 }
