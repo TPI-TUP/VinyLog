@@ -2,6 +2,7 @@ using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
+using Application.Models;
 
 namespace Web.Controllers;
 
@@ -21,6 +22,10 @@ public class AlbumController : ControllerBase
     {
         var albums = await _albumService.GetAllAsync();
 
+        var dtos = albums
+        .Select(AlbumDto.Create)
+        .ToList();
+
         return Ok(albums);
     }
 
@@ -34,7 +39,7 @@ public class AlbumController : ControllerBase
             return NotFound();
         }
 
-        return Ok(album);
+        return Ok(AlbumDto.Create(album));
     }
 
     [HttpPost]
