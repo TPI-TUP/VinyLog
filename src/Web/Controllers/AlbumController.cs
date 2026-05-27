@@ -52,10 +52,7 @@ public class AlbumController : ControllerBase
         int id,
         [FromBody] Album album)
     {
-        if (id != album.Id)
-        {
-            return BadRequest();
-        }
+        album.Id = id;
 
         await _albumService.UpdateAsync(album);
 
