@@ -2,6 +2,8 @@ using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
+using Application.Models;
+using Application.Models.Requests;
 
 namespace Web.Controllers;
 
@@ -34,15 +36,15 @@ public class AlbumController : ControllerBase
             return NotFound();
         }
 
-        return Ok(album);
+        return Ok((album));
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(
-        [FromBody] Album album)
+        [FromBody] CreateAlbumDto dto)
     {
         var createdAlbum = await _albumService
-            .AddAsync(album);
+       .AddAsync(dto);
 
         return Ok(createdAlbum);
     }
@@ -50,11 +52,9 @@ public class AlbumController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
-        [FromBody] Album album)
+        [FromBody] UpdateAlbumDto dto)
     {
-        album.Id = id;
-
-        await _albumService.UpdateAsync(album);
+        await _albumService.UpdateAsync(id, dto);
 
         return NoContent();
     }
