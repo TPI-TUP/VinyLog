@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20260525152613_Albums")]
+    partial class Albums
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
@@ -22,10 +25,6 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("ArtistName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<double>("AverageRating")
                         .HasColumnType("REAL");
@@ -37,6 +36,9 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("Genre")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("IdArtist")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Image")
                         .IsRequired()

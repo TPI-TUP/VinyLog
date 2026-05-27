@@ -6,7 +6,7 @@ public class Album
 {
     public int Id { get; set; }
 
-    public string Title { get; set; }
+    public string Name { get; set; }
 
     public string Genre { get; set; }
 
@@ -16,7 +16,11 @@ public class Album
 
     public string Image { get; set; }
 
+    public string? YoutubeVideoId { get; set; }
+
     public double AverageRating { get; set; }
 
-    public int IdArtist { get; set; }
+    // public int IdArtist { get; set; }
+    public string ArtistName { get; set; }
+
 }

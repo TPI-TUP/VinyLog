@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
-[Route("api/artists")]
 [ApiController]
+[Route("api/artists")]
 public class ArtistController : ControllerBase
 {
 
