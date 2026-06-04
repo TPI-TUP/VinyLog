@@ -1,12 +1,7 @@
 using Domain.Entities;
 
-namespace Application.Interfaces;
+namespace Domain.Interfaces;
 
-public interface IArtistRepository
+public interface IArtistRepository : IRepositoryBase<Artist>
 {
-    Task AddAsync(Artist artist);
-    Task<List<Artist>> ListAsync();
-    Task<Artist?> GetByIdAsync(int id);
-    Task UpdateAsync(Artist artist);
-    Task DeleteAsync(Artist artist);
 }
