@@ -85,11 +85,11 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.Configure<AutenticacionService.AutenticacionServiceOptions>(builder.Configuration.GetSection("Authentication"));
 
 
-// Configure the SQLite Connection
-var connection = new SqliteConnection("Data Source=VinyLogDataBase.db");
+// Configuracion de la Base de Datos
+string connectionString = builder.Configuration["ConnectionStrings:SQLiteConnectionString"]!;
+var connection = new SqliteConnection(connectionString);
 connection.Open();
 
-// Set journal mode to DELETE using PRAGMA statement
 using (var command = connection.CreateCommand())
 {
     command.CommandText = "PRAGMA journal_mode = DELETE;";
