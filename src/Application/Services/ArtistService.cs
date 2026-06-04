@@ -1,10 +1,12 @@
 using Application.Interfaces;
+using Application.Models;
+using Application.Models.Requests;
 using Domain.Entities;
-
+using Domain.Interfaces;
 
 namespace Application.Services;
 
-public class ArtistService
+public class ArtistService : IArtistService
 {
     private readonly IArtistRepository _artistRepository;
 
@@ -13,43 +15,72 @@ public class ArtistService
         _artistRepository = artistRepository;
     }
 
-    public async Task<Artist> CreateArtist(Artist artistRequest)
+    public async Task<List<ArtistDto>> GetAllAsync()
     {
-        await _artistRepository.AddAsync(artistRequest);
-        return artistRequest;
+        var artists = await _artistRepository.ListAsync();
+
+        return artists
+            .Select(ArtistDto.Create)
+            .ToList();
     }
 
-    public async Task<List<Artist>> GetAll()
-    {
-        return await _artistRepository.ListAsync();
-    }
-
-    public async Task<Artist?> GetArtist(int id)
-    {
-        return await _artistRepository.GetByIdAsync(id);
-    }
-
-    public async Task<Artist?> UpdateArtist(int id, Artist updatedArtist)
+    public async Task<ArtistDto?> GetByIdAsync(int id)
     {
         var artist = await _artistRepository.GetByIdAsync(id);
-        if (artist == null) return null;
 
-        artist.Name = updatedArtist.Name;
-        artist.DateBirthday = updatedArtist.DateBirthday;
-        artist.Country = updatedArtist.Country;
-        artist.Description = updatedArtist.Description;
+        if (artist == null)
+        {
+            return null;
+        }
+
+        return ArtistDto.Create(artist);
+    }
+
+    public async Task<ArtistDto> CreateArtistAsync(CreateArtistDto dto)
+    {
+        var artist = new Artist
+        {
+            Name = dto.Name,
+            DateBirthday = dto.DateBirthday,
+            Country = dto.Country,
+            Description = dto.Description
+        };
+
+        var createdArtist = await _artistRepository.AddAsync(artist);
+
+        return ArtistDto.Create(createdArtist);
+    }
+
+    public async Task<ArtistDto?> UpdateArtistAsync(int id, UpdateArtistDto dto)
+    {
+        var artist = await _artistRepository.GetByIdAsync(id);
+
+        if (artist == null)
+        {
+            return null;
+        }
+
+        artist.Name = dto.Name;
+        artist.DateBirthday = dto.DateBirthday;
+        artist.Country = dto.Country;
+        artist.Description = dto.Description;
 
         await _artistRepository.UpdateAsync(artist);
-        return artist;
+
+        return ArtistDto.Create(artist);
     }
 
-    public async Task<bool> DeleteArtist(int id)
+    public async Task<bool> DeleteArtistAsync(int id)
     {
         var artist = await _artistRepository.GetByIdAsync(id);
-        if (artist == null) return false;
+
+        if (artist == null)
+        {
+            return false;
+        }
 
         await _artistRepository.DeleteAsync(artist);
+
         return true;
     }
-
 }
