@@ -46,16 +46,22 @@ public class AlbumService : IAlbumService
     // CREATE ALBUM 
     public async Task<AlbumDto> AddAsync(CreateAlbumDto dto)
 
-    // Validaciones 
     {
+        // Validaciones 
         if (string.IsNullOrWhiteSpace(dto.Name))
+        {
             throw new AppValidationException("El nombre del álbum es obligatorio.");
+        }
 
         if (string.IsNullOrWhiteSpace(dto.ArtistName))
+        {
             throw new AppValidationException("El nombre del artista es obligatorio.");
+        }
 
         if (dto.ReleaseDate > DateTime.UtcNow)
+        {
             throw new AppValidationException("La fecha de lanzamiento no puede ser futura.");
+        }
         var album = new Album
         {
             Name = dto.Name,
