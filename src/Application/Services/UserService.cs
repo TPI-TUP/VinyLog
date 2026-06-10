@@ -1,6 +1,7 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -13,8 +14,30 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public User CreateUser(User userRequest)
+    // CREATE USER
+    public async Task<User> CreateUserAsync(User userRequest)
     {
+        // Validaciones
+        if (string.IsNullOrWhiteSpace(userRequest.Username))
+        {
+            throw new AppValidationException(
+                "El nombre de usuario es obligatorio.");
+        }
+        if (string.IsNullOrWhiteSpace(userRequest.Email))
+        {
+            throw new AppValidationException(
+                "El correo electrónico es obligatorio.");
+        }
+        if (!userRequest.Email.Contains("@"))
+        {
+            throw new AppValidationException(
+                "El correo electrónico no tiene un formato válido.");
+        }
+        if (string.IsNullOrWhiteSpace(userRequest.Password))
+        {
+            throw new AppValidationException(
+                "La contraseña es obligatoria.");
+        }
         var newUser = new User
         {
             Username = userRequest.Username,
@@ -23,37 +46,41 @@ public class UserService : IUserService
             Role = userRequest.Role
         };
 
-        _userRepository.AddAsync(newUser).Wait();
+        await _userRepository.AddAsync(newUser);
 
         return newUser;
     }
 
-    public List<User> GetAll()
+    //  GET ALL USERS
+    public async Task<List<User>> GetAllAsync()
     {
-        return _userRepository
-            .ListAsync()
-            .Result;
+        return await _userRepository.ListAsync();
     }
 
-    public User? GetUser(int id)
+    // GET USER BY ID
+    public async Task<User> GetUserAsync(int id)
     {
-        return _userRepository
-            .GetByIdAsync(id)
-            .Result;
-    }
-
-    public User? UpdateUser(
-        int id,
-        User updatedUser)
-    {
-        var user =
-            _userRepository
-                .GetByIdAsync(id)
-                .Result;
+        var user = await _userRepository.GetByIdAsync(id);
 
         if (user == null)
         {
-            return null;
+            throw new NotFoundException("User", id);
+        }
+
+        return user;
+    }
+
+    //  UPDATE USER
+    public async Task<User> UpdateUserAsync(
+    int id,
+    User updatedUser)
+    {
+        var user =
+            await _userRepository.GetByIdAsync(id);
+
+        if (user == null)
+        {
+            throw new NotFoundException("User", id);
         }
 
         user.Username = updatedUser.Username;
@@ -61,25 +88,22 @@ public class UserService : IUserService
         user.Password = updatedUser.Password;
         user.Role = updatedUser.Role;
 
-        _userRepository.UpdateAsync(user).Wait();
+        await _userRepository.UpdateAsync(user);
 
         return user;
     }
 
-    public bool DeleteUser(int id)
+    //  DELETE USER
+    public async Task DeleteUserAsync(int id)
     {
-        var user =
-            _userRepository
-                .GetByIdAsync(id)
-                .Result;
+        var user = await _userRepository.GetByIdAsync(id);
 
         if (user == null)
         {
-            return false;
+            throw new NotFoundException("User", id);
         }
 
-        _userRepository.DeleteAsync(user).Wait();
+        await _userRepository.DeleteAsync(user);
 
-        return true;
     }
 }

@@ -4,13 +4,13 @@ namespace Application.Interfaces;
 
 public interface IUserService
 {
-    User CreateUser(User userRequest);
+    Task<User> CreateUserAsync(User userRequest);
 
-    List<User> GetAll();
+    Task<List<User>> GetAllAsync();
 
-    User? GetUser(int id);
+    Task<User> GetUserAsync(int id);
 
-    User? UpdateUser(int id, User updatedUser);
+    Task<User> UpdateUserAsync(int id, User updatedUser);
 
-    bool DeleteUser(int id);
+    Task DeleteUserAsync(int id);
 }

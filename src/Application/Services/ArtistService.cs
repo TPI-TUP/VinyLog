@@ -3,6 +3,7 @@ using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -15,6 +16,7 @@ public class ArtistService : IArtistService
         _artistRepository = artistRepository;
     }
 
+    // GET ALL ARTIST
     public async Task<List<ArtistDto>> GetAllAsync()
     {
         var artists = await _artistRepository.ListAsync();
@@ -24,20 +26,38 @@ public class ArtistService : IArtistService
             .ToList();
     }
 
+    // GET BY ID ARTIST
     public async Task<ArtistDto?> GetByIdAsync(int id)
     {
         var artist = await _artistRepository.GetByIdAsync(id);
 
         if (artist == null)
         {
-            return null;
+            throw new NotFoundException("Artist", id);
         }
 
         return ArtistDto.Create(artist);
     }
 
+    // CREATE ARTIST
     public async Task<ArtistDto> CreateArtistAsync(CreateArtistDto dto)
     {
+        // Validaciones
+        if (string.IsNullOrWhiteSpace(dto.Name))
+        {
+            throw new AppValidationException(
+                "El nombre del artista es obligatorio.");
+        }
+        if (string.IsNullOrWhiteSpace(dto.Country))
+        {
+            throw new AppValidationException(
+                "El país del artista es obligatorio.");
+        }
+        if (dto.DateBirthday > DateTime.UtcNow)
+        {
+            throw new AppValidationException(
+                "La fecha de nacimiento no puede ser futura.");
+        }
         var artist = new Artist
         {
             Name = dto.Name,
@@ -51,13 +71,14 @@ public class ArtistService : IArtistService
         return ArtistDto.Create(createdArtist);
     }
 
+    // UPDATE ARTIST
     public async Task<ArtistDto?> UpdateArtistAsync(int id, UpdateArtistDto dto)
     {
         var artist = await _artistRepository.GetByIdAsync(id);
 
         if (artist == null)
         {
-            return null;
+            throw new NotFoundException("Artist", id); ;
         }
 
         artist.Name = dto.Name;
@@ -69,18 +90,17 @@ public class ArtistService : IArtistService
 
         return ArtistDto.Create(artist);
     }
-
-    public async Task<bool> DeleteArtistAsync(int id)
+    //  DELELTE ARTIST
+    public async Task DeleteArtistAsync(int id)
     {
         var artist = await _artistRepository.GetByIdAsync(id);
 
         if (artist == null)
         {
-            return false;
+            throw new NotFoundException("Artist", id);
         }
 
         await _artistRepository.DeleteAsync(artist);
 
-        return true;
     }
 }

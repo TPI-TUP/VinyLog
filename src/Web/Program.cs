@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Infrastructure.Services;
 using Infrastructure.Repositories;
 using Domain.Interfaces;
+using Web.Middlewares;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +25,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ICustomAuthenticationService, AutenticacionService>();
 builder.Services.AddHttpClient<IYoutubeService, YoutubeService>();
+builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
+
 
 builder.Services.AddOpenApi(options =>
 {
@@ -99,8 +102,8 @@ using (var command = connection.CreateCommand())
 builder.Services.AddDbContext<ApplicationContext>(dbContextOptions => dbContextOptions.UseSqlite(connection));
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 // if (app.Environment.IsDevelopment())
 // {

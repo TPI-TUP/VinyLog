@@ -13,5 +13,5 @@ public interface IArtistService
 
     Task<ArtistDto?> UpdateArtistAsync(int id, UpdateArtistDto dto);
 
-    Task<bool> DeleteArtistAsync(int id);
+    Task DeleteArtistAsync(int id);
 }
