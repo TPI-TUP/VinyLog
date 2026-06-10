@@ -102,7 +102,17 @@ using (var command = connection.CreateCommand())
 builder.Services.AddDbContext<ApplicationContext>(dbContextOptions => dbContextOptions.UseSqlite(connection));
 
 var app = builder.Build();
+
 // Configure the HTTP request pipeline.
+
+#region Apply EF migrations
+using (var serviceScopescope = app.Services.CreateScope())
+{
+    var dbContext = serviceScopescope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    dbContext.Database.Migrate();
+}
+#endregion
+
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 // if (app.Environment.IsDevelopment())
