@@ -27,6 +27,7 @@ builder.Services.AddScoped<ICustomAuthenticationService, AutenticacionService>()
 builder.Services.AddHttpClient<IYoutubeService, YoutubeService>();
 builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
 
+
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -101,8 +102,8 @@ using (var command = connection.CreateCommand())
 builder.Services.AddDbContext<ApplicationContext>(dbContextOptions => dbContextOptions.UseSqlite(connection));
 
 var app = builder.Build();
-app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 // Configure the HTTP request pipeline.
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 // if (app.Environment.IsDevelopment())
 // {

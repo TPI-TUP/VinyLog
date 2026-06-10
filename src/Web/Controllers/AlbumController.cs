@@ -31,10 +31,10 @@ public class AlbumController : ControllerBase
     {
         var album = await _albumService.GetByIdAsync(id);
 
-        if (album == null)
-        {
-            return NotFound();
-        }
+        // if (album == null)
+        // {
+        //     return NotFound();
+        // }
 
         return Ok((album));
     }
