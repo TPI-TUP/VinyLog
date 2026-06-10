@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Application.Models;
 using Application.Models.Requests;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -18,6 +19,8 @@ public class AlbumService : IAlbumService
         _albumRepository = albumRepository;
         _youtubeService = youtubeService;
     }
+
+    // GET ALL ALBUMS
     public async Task<List<AlbumDto>> GetAllAsync()
     {
         var albums = await _albumRepository.ListAsync();
@@ -27,20 +30,32 @@ public class AlbumService : IAlbumService
             .ToList();
     }
 
+    // GET BY ID ALBUMS
     public async Task<AlbumDto?> GetByIdAsync(int id)
     {
         var album = await _albumRepository.GetByIdAsync(id);
 
         if (album == null)
         {
-            return null;
+            throw new NotFoundException("Album", id);
         }
 
         return AlbumDto.Create(album);
     }
 
+    // CREATE ALBUM 
     public async Task<AlbumDto> AddAsync(CreateAlbumDto dto)
+
+    // Validaciones 
     {
+        if (string.IsNullOrWhiteSpace(dto.Name))
+            throw new AppValidationException("El nombre del álbum es obligatorio.");
+
+        if (string.IsNullOrWhiteSpace(dto.ArtistName))
+            throw new AppValidationException("El nombre del artista es obligatorio.");
+
+        if (dto.ReleaseDate > DateTime.UtcNow)
+            throw new AppValidationException("La fecha de lanzamiento no puede ser futura.");
         var album = new Album
         {
             Name = dto.Name,
@@ -63,15 +78,16 @@ public class AlbumService : IAlbumService
 
         return AlbumDto.Create(createdAlbum);
     }
-    public async Task UpdateAsync(int id,
-    UpdateAlbumDto dto)
+
+    // UPDATE ALBUM
+    public async Task UpdateAsync(int id, UpdateAlbumDto dto)
     {
         var album = await _albumRepository
         .GetByIdAsync(id);
 
         if (album == null)
         {
-            throw new Exception("Album not found");
+            throw new NotFoundException("Album", id);
         }
 
         album.Name = dto.Name;
@@ -85,13 +101,14 @@ public class AlbumService : IAlbumService
     }
 
 
+    // DELETE ALBUM
     public async Task DeleteAsync(int id)
     {
         var album = await _albumRepository.GetByIdAsync(id);
 
         if (album == null)
         {
-            throw new Exception("Album not found");
+            throw new NotFoundException("Album", id);
         }
 
         await _albumRepository.DeleteAsync(album);
