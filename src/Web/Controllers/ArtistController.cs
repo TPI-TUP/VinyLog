@@ -16,24 +16,23 @@ public class ArtistController : ControllerBase
     {
         _artistService = artistService;
     }
-
+    //  GET ARTIST
     [HttpGet]
     public async Task<ActionResult<List<ArtistDto>>> GetAll()
     {
         return Ok(await _artistService.GetAllAsync());
     }
 
+    // GET ARTIST BY ID
     [HttpGet("{artistId:int}", Name = "GetArtist")]
     public async Task<ActionResult<ArtistDto>> GetArtist([FromRoute] int artistId)
     {
         var artist = await _artistService.GetByIdAsync(artistId);
 
-        if (artist is null)
-            return NotFound();
-
         return Ok(artist);
     }
 
+    // POST ARTIST
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<ArtistDto>> CreateArtist([FromBody] CreateArtistDto dto)
@@ -47,26 +46,22 @@ public class ArtistController : ControllerBase
         );
     }
 
+    //  UPDATE ARTIST
     [Authorize]
     [HttpPut("{artistId:int}")]
     public async Task<ActionResult<ArtistDto>> UpdateArtist(int artistId, [FromBody] UpdateArtistDto dto)
     {
         var updated = await _artistService.UpdateArtistAsync(artistId, dto);
 
-        if (updated is null)
-            return NotFound();
-
         return Ok(updated);
     }
 
+    // DELETE ARTIST
     [Authorize]
     [HttpDelete("{artistId:int}")]
     public async Task<ActionResult> DeleteArtist(int artistId)
     {
-        var deleted = await _artistService.DeleteArtistAsync(artistId);
-
-        if (!deleted)
-            return NotFound();
+        await _artistService.DeleteArtistAsync(artistId);
 
         return NoContent();
     }

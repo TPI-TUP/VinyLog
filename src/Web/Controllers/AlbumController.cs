@@ -1,8 +1,5 @@
-using Application.Services;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
-using Application.Models;
 using Application.Models.Requests;
 
 namespace Web.Controllers;
@@ -18,6 +15,7 @@ public class AlbumController : ControllerBase
         _albumService = albumService;
     }
 
+    // GET ALBUMS
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -26,19 +24,16 @@ public class AlbumController : ControllerBase
         return Ok(albums);
     }
 
+    // GET ALBUMS BY ID
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
         var album = await _albumService.GetByIdAsync(id);
 
-        if (album == null)
-        {
-            return NotFound();
-        }
-
         return Ok((album));
     }
 
+    // POST ALBUM
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateAlbumDto dto)
@@ -49,6 +44,7 @@ public class AlbumController : ControllerBase
         return Ok(createdAlbum);
     }
 
+    //  UPDATE ALBUM 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
@@ -59,6 +55,7 @@ public class AlbumController : ControllerBase
         return NoContent();
     }
 
+    //  DELETE ALBUM
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

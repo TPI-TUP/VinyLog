@@ -18,34 +18,33 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    // GET USERS
     [Authorize]
     [HttpGet]
-    public ActionResult<List<UserDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
-        var users = _userService.GetAll();
+        var users = await _userService.GetAllAsync();
 
         var usersDto = users.Select(UserDto.Create);
 
         return Ok(usersDto);
     }
 
-
+    //  GET USER BY ID
     [HttpGet("{userId:int}", Name = "GetUser")]
-    public ActionResult<User> GetUser([FromRoute] int userId)
+    public async Task<ActionResult<UserDto>> GetUser([FromRoute] int userId)
     {
-        var user = _userService.GetUser(userId);
+        var user = await _userService.GetUserAsync(userId);
 
-        if (user is null)
-            return NotFound();
-
-        return Ok(user);
+        return Ok(UserDto.Create(user));
 
     }
 
+    // POST USER
     [HttpPost]
-    public ActionResult<User> CreateUser([FromBody] User user)
+    public async Task<ActionResult<UserDto>> CreateUser([FromBody] User user)
     {
-        var createdUser = _userService.CreateUser(user);
+        var createdUser = await _userService.CreateUserAsync(user);
 
         return CreatedAtRoute(
             "GetUser",
@@ -53,29 +52,26 @@ public class UserController : ControllerBase
             {
                 userId = createdUser.Id
             },
-            createdUser
+            UserDto.Create(createdUser)
         );
     }
 
-
+    //  UPDATE USER
     [HttpPut("{userId:int}")]
-    public ActionResult<User> UpdateUser(int userId, [FromBody] User user)
+    public async Task<ActionResult<UserDto>> UpdateUser(int userId, [FromBody] User user)
     {
-        var updated = _userService.UpdateUser(userId, user);
+        var updated = await _userService.UpdateUserAsync(
+            userId,
+            user);
 
-        if (updated is null)
-            return NotFound();
-
-        return Ok(updated);
+        return Ok(UserDto.Create(updated));
     }
 
+    // DELETE USER
     [HttpDelete("{userId:int}")]
-    public ActionResult DeleteUser(int userId)
+    public async Task<ActionResult> DeleteUser(int userId)
     {
-        var deleted = _userService.DeleteUser(userId);
-
-        if (!deleted)
-            return NotFound();
+        await _userService.DeleteUserAsync(userId);
 
         return NoContent();
     }

@@ -27,7 +27,7 @@ public class AutenticacionService
     }
 
 
-    // Metodo para validar User
+    // Validar User
     private async Task<User?> ValidateUser(
         AuthenticationRequest authenticationRequest)
     {
