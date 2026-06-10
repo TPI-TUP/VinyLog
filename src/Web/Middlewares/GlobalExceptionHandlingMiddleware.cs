@@ -89,6 +89,28 @@ namespace Web.Middlewares
 
                 await context.Response.WriteAsync(json);
             }
+
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                int statusCode = (int)HttpStatusCode.Unauthorized;
+
+                context.Response.StatusCode = statusCode;
+
+                ProblemDetails problem = new()
+                {
+                    Status = statusCode,
+                    Title = "No autorizado",
+                    Detail = ex.Message
+                };
+
+                string json = JsonSerializer.Serialize(problem);
+
+                context.Response.ContentType = "application/json";
+
+                await context.Response.WriteAsync(json);
+            }
             catch (Exception ex)
             {
 
@@ -113,6 +135,7 @@ namespace Web.Middlewares
                 await context.Response.WriteAsync(json);
 
             }
+
         }
     }
 }
