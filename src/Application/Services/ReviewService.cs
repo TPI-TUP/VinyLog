@@ -107,7 +107,8 @@ public class ReviewService : IReviewService
     // UPDATE REVIEW
     public async Task UpdateAsync(
         int id,
-        UpdateReviewDto dto)
+        UpdateReviewDto dto,
+        int userId)
     {
         var review =
             await _reviewRepository.GetByIdAsync(id);
@@ -115,6 +116,12 @@ public class ReviewService : IReviewService
         if (review == null)
         {
             throw new NotFoundException("Review", id);
+        }
+
+        if (review.UserId != userId)
+        {
+            throw new UnauthorizedAccessException(
+                "No tienes permiso para modificar esta reseña.");
         }
 
         if (dto.Content != null)
@@ -145,7 +152,7 @@ public class ReviewService : IReviewService
     }
 
     // DELETE REVIEW
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, int userId)
     {
         var review =
             await _reviewRepository.GetByIdAsync(id);
@@ -153,6 +160,12 @@ public class ReviewService : IReviewService
         if (review == null)
         {
             throw new NotFoundException("Review", id);
+        }
+
+        if (review.UserId != userId)
+        {
+            throw new UnauthorizedAccessException(
+                "No tienes permiso para eliminar esta reseña.");
         }
 
         var albumId = review.AlbumId;

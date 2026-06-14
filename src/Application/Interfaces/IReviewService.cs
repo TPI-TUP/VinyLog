@@ -17,7 +17,9 @@ public interface IReviewService
 
     Task UpdateAsync(
         int id,
-        UpdateReviewDto dto);
+        UpdateReviewDto dto,
+        int userId);
 
-    Task DeleteAsync(int id);
+    Task DeleteAsync(int id,
+        int userId);
 }
