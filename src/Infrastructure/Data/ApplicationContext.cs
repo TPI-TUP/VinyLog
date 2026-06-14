@@ -27,8 +27,8 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Review>()
                 .HasIndex(r => new
                 {
-                    r.IdUser,
-                    r.IdAlbum
+                    r.UserId,
+                    r.AlbumId
                 })
                 .IsUnique();
         }

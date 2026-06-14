@@ -19,8 +19,8 @@ public class ReviewDto
         return new ReviewDto
         {
             Id = review.Id,
-            IdUser = review.IdUser,
-            IdAlbum = review.IdAlbum,
+            IdUser = review.UserId,
+            IdAlbum = review.AlbumId,
             Content = review.Content,
             Rating = review.Rating
         };

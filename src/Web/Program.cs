@@ -19,10 +19,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IArtistService, ArtistService>();
 builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
+builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
+
 builder.Services.AddScoped<ICustomAuthenticationService, AutenticacionService>();
 builder.Services.AddHttpClient<IYoutubeService, YoutubeService>();
 builder.Services.AddScoped<GlobalExceptionHandlingMiddleware>();
@@ -109,6 +112,7 @@ var app = builder.Build();
 using (var serviceScopescope = app.Services.CreateScope())
 {
     var dbContext = serviceScopescope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    // Aplica cualquier migración pendiente
     dbContext.Database.Migrate();
 }
 #endregion
