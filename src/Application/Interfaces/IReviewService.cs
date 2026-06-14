@@ -9,7 +9,7 @@ public interface IReviewService
 
     Task<ReviewDto?> GetByIdAsync(int id);
 
-    Task<List<ReviewDto>> GetByAlbumAsync(int albumId);
+    // Task<List<ReviewDto>> GetByAlbumAsync(int albumId);
 
     Task<ReviewDto> AddAsync(
         CreateReviewDto dto,

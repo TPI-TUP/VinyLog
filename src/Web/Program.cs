@@ -24,6 +24,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
 
 builder.Services.AddScoped<ICustomAuthenticationService, AutenticacionService>();

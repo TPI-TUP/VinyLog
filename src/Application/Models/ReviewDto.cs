@@ -6,9 +6,9 @@ public class ReviewDto
 {
     public int Id { get; set; }
 
-    public int IdUser { get; set; }
+    public int UserId { get; set; }
 
-    public int IdAlbum { get; set; }
+    public int AlbumId { get; set; }
 
     public string Content { get; set; }
 
@@ -19,8 +19,8 @@ public class ReviewDto
         return new ReviewDto
         {
             Id = review.Id,
-            IdUser = review.UserId,
-            IdAlbum = review.AlbumId,
+            UserId = review.UserId,
+            AlbumId = review.AlbumId,
             Content = review.Content,
             Rating = review.Rating
         };

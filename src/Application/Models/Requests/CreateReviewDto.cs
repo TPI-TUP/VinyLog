@@ -2,7 +2,7 @@ namespace Application.Models.Requests;
 
 public class CreateReviewDto
 {
-    public int IdAlbum { get; set; }
+    public int AlbumId { get; set; }
 
     public string Content { get; set; }
 
