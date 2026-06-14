@@ -7,7 +7,7 @@ public class Review
     public int Id { get; set; }
 
     public int UserId { get; set; }
-    // Propiedad de navegacion: permite que EF entienda las relaciones entre entidades. No crea columnas nuevas, solo le dicen a EF que la columna IdUser apunta a la tabla Users
+    // Propiedad de navegacion: permite que EF entienda las relaciones entre entidades Review y User
     public User User { get; set; }
 
     public int AlbumId { get; set; }
