@@ -1,5 +1,3 @@
-using System;
-
 namespace Domain.Entities;
 
 public class Album
@@ -22,5 +20,10 @@ public class Album
 
     // public int IdArtist { get; set; }
     public string ArtistName { get; set; }
+
+    // Relacion: 1-N (un album puede tener muchas reseñas)
+    //  Por ejemplo: album.Reviews devuelve todas las reseñas de ese album
+    public ICollection<Review> Reviews { get; set; }
+        = new List<Review>();
 
 }
