@@ -1,4 +1,3 @@
-using System;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +16,21 @@ namespace Infrastructure.Data
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
 
+        }
+        protected override void OnModelCreating(
+            ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Crea un indice unico compuesto por IdUser+IdAlbum para la tabla Reviews
+            //  Evita que un mismo usuario haga mas de una reseña por album
+            modelBuilder.Entity<Review>()
+                .HasIndex(r => new
+                {
+                    r.IdUser,
+                    r.IdAlbum
+                })
+                .IsUnique();
         }
     }
 }
