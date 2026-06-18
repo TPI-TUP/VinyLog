@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces;
 using Application.Models.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
@@ -34,6 +35,7 @@ public class AlbumController : ControllerBase
     }
 
     // POST ALBUM
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateAlbumDto dto)
@@ -45,6 +47,7 @@ public class AlbumController : ControllerBase
     }
 
     //  UPDATE ALBUM 
+    [Authorize]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
@@ -56,6 +59,7 @@ public class AlbumController : ControllerBase
     }
 
     //  DELETE ALBUM
+    [Authorize]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
