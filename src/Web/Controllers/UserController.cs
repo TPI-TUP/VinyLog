@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/users")]
 public class UserController : ControllerBase
@@ -19,7 +20,6 @@ public class UserController : ControllerBase
     }
 
     // GET USERS
-    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
@@ -41,6 +41,7 @@ public class UserController : ControllerBase
     }
 
     // POST USER
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<UserDto>> CreateUser([FromBody] User user)
     {
@@ -57,7 +58,6 @@ public class UserController : ControllerBase
     }
 
     //  UPDATE USER
-    [Authorize]
     [HttpPut("{userId:int}")]
     public async Task<ActionResult<UserDto>> UpdateUser(int userId, [FromBody] User user)
     {
@@ -69,7 +69,6 @@ public class UserController : ControllerBase
     }
 
     // DELETE USER
-    [Authorize]
     [HttpDelete("{userId:int}")]
     public async Task<ActionResult> DeleteUser(int userId)
     {
