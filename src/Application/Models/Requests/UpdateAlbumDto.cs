@@ -12,5 +12,6 @@ public class UpdateAlbumDto
 
     public string Image { get; set; }
 
-    public string ArtistName { get; set; }
+    //public string ArtistName { get; set; }
+    public List<int> ArtistIds { get; set; } = [];
 }
