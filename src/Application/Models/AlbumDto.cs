@@ -1,4 +1,5 @@
 using Domain.Entities;
+using System.Linq;
 
 namespace Application.Models;
 
@@ -20,7 +21,8 @@ public class AlbumDto
     public double AverageRating { get; set; }
 
     // public int IdArtist { get; set; }
-    public string ArtistName { get; set; }
+    //public string ArtistName { get; set; }
+    public List<string> Artists {get; set;} = [];
 
     public static AlbumDto Create(Album album)
     {
@@ -34,7 +36,10 @@ public class AlbumDto
         dto.YoutubeVideoId = album.YoutubeVideoId;
         dto.AverageRating = album.AverageRating;
         // dto.IdArtist = album.IdArtist;
-        dto.ArtistName = album.ArtistName;
+        //dto.ArtistName = album.ArtistName;
+        dto.Artists = album.Artists
+            .Select(a => a.Name ?? "")
+            .ToList();
 
         return dto;
     }

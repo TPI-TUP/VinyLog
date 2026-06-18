@@ -11,13 +11,16 @@ public class AlbumService : IAlbumService
 {
     private readonly IAlbumRepository _albumRepository;
     private readonly IYoutubeService _youtubeService;
+    private readonly IArtistRepository _artistRepository;
 
     public AlbumService(
         IAlbumRepository albumRepository,
-        IYoutubeService youtubeService)
+        IYoutubeService youtubeService,
+        IArtistRepository artistRepository)
     {
         _albumRepository = albumRepository;
         _youtubeService = youtubeService;
+        _artistRepository = artistRepository;
     }
 
     // GET ALL ALBUMS
@@ -53,9 +56,9 @@ public class AlbumService : IAlbumService
             throw new AppValidationException("El nombre del álbum es obligatorio.");
         }
 
-        if (string.IsNullOrWhiteSpace(dto.ArtistName))
+        if (dto.ArtistIds.Count == 0)
         {
-            throw new AppValidationException("El nombre del artista es obligatorio.");
+            throw new AppValidationException("Debe seleccionar al menos un artista.");
         }
 
         if (dto.ReleaseDate > DateTime.UtcNow)
@@ -69,18 +72,32 @@ public class AlbumService : IAlbumService
             ReleaseDate = dto.ReleaseDate,
             Description = dto.Description,
             Image = dto.Image,
-            ArtistName = dto.ArtistName
+            //ArtistName = dto.ArtistName
         };
+
+        foreach (var artistId in dto.ArtistIds)
+        {
+            var artist = await _artistRepository.GetByIdAsync(artistId);
+            if (artist == null)
+            {
+                throw new NotFoundException("Artist", artistId);
+            }
+            album.Artists.Add(artist);
+        }
+
+        var firstArtist = await _artistRepository
+            .GetByIdAsync(dto.ArtistIds.First());
 
         var videoId = await _youtubeService
             .SearchAlbumVideoAsync(
                 album.Name,
-                album.ArtistName);
+                firstArtist?.Name ?? "");
 
         album.YoutubeVideoId = videoId;
+        //album.YoutubeVideoId = null;
 
         var createdAlbum = await _albumRepository
-        .AddAsync(album);
+            .AddAsync(album);
 
         return AlbumDto.Create(createdAlbum);
     }
@@ -101,7 +118,17 @@ public class AlbumService : IAlbumService
         album.ReleaseDate = dto.ReleaseDate;
         album.Description = dto.Description;
         album.Image = dto.Image;
-        album.ArtistName = dto.ArtistName;
+        //album.ArtistName = dto.ArtistName;
+        album.Artists.Clear();
+        foreach (var artistId in dto.ArtistIds)
+        {
+            var artist = await _artistRepository.GetByIdAsync(artistId);
+            if (artist == null)
+            {
+                throw new NotFoundException("Artist", artistId);
+            }
+            album.Artists.Add(artist);
+        }
 
         await _albumRepository.UpdateAsync(album);
     }

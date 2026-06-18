@@ -31,6 +31,10 @@ namespace Infrastructure.Data
                     r.AlbumId
                 })
                 .IsUnique();
+            
+            modelBuilder.Entity<Album>()
+                .HasMany(a => a.Artists)
+                .WithMany(a => a.Albums);
         }
     }
 }
