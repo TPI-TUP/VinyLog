@@ -89,6 +89,8 @@ builder.Services.AddAuthentication("Bearer")
        };
    });
 
+builder.Services.AddAuthorization();
+
 builder.Services.Configure<AutenticacionService.AutenticacionServiceOptions>(builder.Configuration.GetSection("Authentication"));
 
 
