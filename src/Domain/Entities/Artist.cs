@@ -9,4 +9,6 @@ public class Artist
     public DateTime DateBirthday {get; set;}
     public string Country {get; set;} = string.Empty;
     public string? Description {get; set;}
+    public ICollection<Album> Albums { get; set; }
+        = new List<Album>();
 }
