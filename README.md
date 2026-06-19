@@ -65,7 +65,8 @@ Los endpoints de escritura protegidos requieren autenticacion y, segun el caso, 
 3. Ejecutar:
 
 ```bash
-dotnet run --project src/Web/Web.csproj
+cd src/Web
+dotnet run --launch-profile https
 ```
 
 La API aplica automaticamente las migraciones pendientes al iniciar.
@@ -81,7 +82,3 @@ Configuraciones relevantes:
 - `YouTube:ApiKey`
 
 En desarrollo se usa una base SQLite local. En produccion la aplicacion esta preparada para ejecutarse en Azure con despliegue automatizado mediante GitHub Actions.
-
-## Repositorio y entrega
-
-El trabajo practico integrador se entrega mediante este mismo repositorio de GitHub, incluyendo codigo fuente, migraciones, autenticacion, persistencia y pipeline de despliegue.
