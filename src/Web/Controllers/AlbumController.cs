@@ -35,7 +35,7 @@ public class AlbumController : ControllerBase
     }
 
     // POST ALBUM
-    [Authorize]
+    [Authorize(Roles = "Admin,Superadmin")]
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateAlbumDto dto)
@@ -47,7 +47,7 @@ public class AlbumController : ControllerBase
     }
 
     //  UPDATE ALBUM 
-    [Authorize]
+    [Authorize(Roles = "Admin,Superadmin")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
@@ -59,7 +59,7 @@ public class AlbumController : ControllerBase
     }
 
     //  DELETE ALBUM
-    [Authorize]
+    [Authorize(Roles = "Admin,Superadmin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

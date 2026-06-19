@@ -33,7 +33,7 @@ public class ArtistController : ControllerBase
     }
 
     // POST ARTIST
-    [Authorize]
+    [Authorize(Roles = "Superadmin")]
     [HttpPost]
     public async Task<ActionResult<ArtistDto>> CreateArtist([FromBody] CreateArtistDto dto)
     {
@@ -47,7 +47,7 @@ public class ArtistController : ControllerBase
     }
 
     //  UPDATE ARTIST
-    [Authorize]
+    [Authorize(Roles = "Superadmin")]
     [HttpPut("{artistId:int}")]
     public async Task<ActionResult<ArtistDto>> UpdateArtist(int artistId, [FromBody] UpdateArtistDto dto)
     {
@@ -57,7 +57,7 @@ public class ArtistController : ControllerBase
     }
 
     // DELETE ARTIST
-    [Authorize]
+    [Authorize(Roles = "Superadmin")]
     [HttpDelete("{artistId:int}")]
     public async Task<ActionResult> DeleteArtist(int artistId)
     {
