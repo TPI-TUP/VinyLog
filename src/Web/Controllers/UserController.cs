@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers;
 
+[Authorize(Roles = "Superadmin")]
 [ApiController]
 [Route("api/users")]
 public class UserController : ControllerBase
@@ -19,7 +20,6 @@ public class UserController : ControllerBase
     }
 
     // GET USERS
-    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
@@ -41,6 +41,7 @@ public class UserController : ControllerBase
     }
 
     // POST USER
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<UserDto>> CreateUser([FromBody] User user)
     {
