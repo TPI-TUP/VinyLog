@@ -1,8 +1,8 @@
-using Domain.Entities;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Application.Models;
 using Microsoft.AspNetCore.Authorization;
+using Application.Models.Requests;
 
 namespace Web.Controllers;
 
@@ -25,9 +25,7 @@ public class UserController : ControllerBase
     {
         var users = await _userService.GetAllAsync();
 
-        var usersDto = users.Select(UserDto.Create);
-
-        return Ok(usersDto);
+        return Ok(users);
     }
 
     //  GET USER BY ID
@@ -36,16 +34,16 @@ public class UserController : ControllerBase
     {
         var user = await _userService.GetUserAsync(userId);
 
-        return Ok(UserDto.Create(user));
+        return Ok(user);
 
     }
 
     // POST USER
     [AllowAnonymous]
     [HttpPost]
-    public async Task<ActionResult<UserDto>> CreateUser([FromBody] User user)
+    public async Task<ActionResult<UserDto>> CreateUser([FromBody] CreateUserDto dto)
     {
-        var createdUser = await _userService.CreateUserAsync(user);
+        var createdUser = await _userService.CreateUserAsync(dto);
 
         return CreatedAtRoute(
             "GetUser",
@@ -53,19 +51,18 @@ public class UserController : ControllerBase
             {
                 userId = createdUser.Id
             },
-            UserDto.Create(createdUser)
-        );
+            createdUser);
     }
 
     //  UPDATE USER
     [HttpPut("{userId:int}")]
-    public async Task<ActionResult<UserDto>> UpdateUser(int userId, [FromBody] User user)
+    public async Task<ActionResult<UserDto>> UpdateUser(int userId, [FromBody] UpdateUserDto dto)
     {
         var updated = await _userService.UpdateUserAsync(
             userId,
-            user);
+            dto);
 
-        return Ok(UserDto.Create(updated));
+        return Ok(updated);
     }
 
     // DELETE USER

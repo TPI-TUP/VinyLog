@@ -111,19 +111,17 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-#region Apply EF migrations
+
+// Aplica cualquier migración pendiente
 using (var serviceScopescope = app.Services.CreateScope())
 {
     var dbContext = serviceScopescope.ServiceProvider.GetRequiredService<ApplicationContext>();
-    // Aplica cualquier migración pendiente
     dbContext.Database.Migrate();
 }
-#endregion
+
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
-// if (app.Environment.IsDevelopment())
-// {
 app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {

@@ -1,5 +1,4 @@
 using Domain.Entities;
-using System.Linq;
 
 namespace Application.Models;
 
@@ -22,7 +21,7 @@ public class AlbumDto
 
     // public int IdArtist { get; set; }
     //public string ArtistName { get; set; }
-    public List<string> Artists {get; set;} = [];
+    public List<string> Artists { get; set; } = [];
 
     public static AlbumDto Create(Album album)
     {

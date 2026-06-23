@@ -2,6 +2,8 @@ using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Exceptions;
+using Application.Models;
+using Application.Models.Requests;
 
 namespace Application.Services;
 
@@ -15,50 +17,54 @@ public class UserService : IUserService
     }
 
     // CREATE USER
-    public async Task<User> CreateUserAsync(User userRequest)
+    public async Task<UserDto> CreateUserAsync(CreateUserDto dto)
     {
         // Validaciones
-        if (string.IsNullOrWhiteSpace(userRequest.Username))
+        if (string.IsNullOrWhiteSpace(dto.Username))
         {
             throw new AppValidationException(
                 "El nombre de usuario es obligatorio.");
         }
-        if (string.IsNullOrWhiteSpace(userRequest.Email))
+        if (string.IsNullOrWhiteSpace(dto.Email))
         {
             throw new AppValidationException(
                 "El correo electrónico es obligatorio.");
         }
-        if (!userRequest.Email.Contains("@"))
+        if (dto.Email != null && !dto.Email.Contains("@"))
         {
             throw new AppValidationException(
                 "El correo electrónico no tiene un formato válido.");
         }
-        if (string.IsNullOrWhiteSpace(userRequest.Password))
+        if (string.IsNullOrWhiteSpace(dto.Password))
         {
             throw new AppValidationException(
                 "La contraseña es obligatoria.");
         }
         var newUser = new User
         {
-            Username = userRequest.Username,
-            Email = userRequest.Email,
-            Password = userRequest.Password,
-            Role = userRequest.Role
+            Username = dto.Username,
+            Email = dto.Email,
+            Password = dto.Password,
+            Role = dto.Role
         };
 
         await _userRepository.AddAsync(newUser);
 
-        return newUser;
+        return UserDto.Create(newUser);
     }
 
     //  GET ALL USERS
-    public async Task<List<User>> GetAllAsync()
+    public async Task<List<UserDto>> GetAllAsync()
     {
-        return await _userRepository.ListAsync();
+        var users = await _userRepository.ListAsync();
+
+        return users
+            .Select(UserDto.Create)
+            .ToList();
     }
 
     // GET USER BY ID
-    public async Task<User> GetUserAsync(int id)
+    public async Task<UserDto> GetUserAsync(int id)
     {
         var user = await _userRepository.GetByIdAsync(id);
 
@@ -67,13 +73,13 @@ public class UserService : IUserService
             throw new NotFoundException("User", id);
         }
 
-        return user;
+        return UserDto.Create(user);
     }
 
     //  UPDATE USER
-    public async Task<User> UpdateUserAsync(
+    public async Task<UserDto> UpdateUserAsync(
     int id,
-    User updatedUser)
+    UpdateUserDto dto)
     {
         var user =
             await _userRepository.GetByIdAsync(id);
@@ -83,14 +89,25 @@ public class UserService : IUserService
             throw new NotFoundException("User", id);
         }
 
-        user.Username = updatedUser.Username;
-        user.Email = updatedUser.Email;
-        user.Password = updatedUser.Password;
-        user.Role = updatedUser.Role;
+        if (dto.Username != null)
+        {
+            user.Username = dto.Username;
+        }
+
+        if (dto.Email != null)
+        {
+            user.Email = dto.Email;
+        }
+
+        if (dto.Role.HasValue)
+        {
+            user.Role = dto.Role.Value;
+        }
+
 
         await _userRepository.UpdateAsync(user);
 
-        return user;
+        return UserDto.Create(user);
     }
 
     //  DELETE USER
