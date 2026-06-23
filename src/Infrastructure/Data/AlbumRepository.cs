@@ -1,5 +1,5 @@
 using Domain.Entities;
-using Domain.Interfaces;
+using Application.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +23,7 @@ public class AlbumRepository
             .Include(a => a.Artists)
             .Include(a => a.Reviews)
             .FirstOrDefaultAsync(
-                a => a.Id.Equals(id), 
+                a => a.Id.Equals(id),
                 cancellationToken);
     }
 

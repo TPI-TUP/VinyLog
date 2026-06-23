@@ -1,6 +1,5 @@
 using Application.Interfaces;
 using Domain.Entities;
-using Domain.Interfaces;
 using Application.Models;
 using Application.Models.Requests;
 using Domain.Exceptions;
