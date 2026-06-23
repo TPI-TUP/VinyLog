@@ -2,7 +2,6 @@ using Application.Interfaces;
 using Application.Models;
 using Application.Models.Requests;
 using Domain.Entities;
-using Domain.Interfaces;
 using Domain.Exceptions;
 
 namespace Application.Services;

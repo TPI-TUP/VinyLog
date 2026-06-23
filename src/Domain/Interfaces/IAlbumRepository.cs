@@ -1,6 +1,7 @@
 using Domain.Entities;
+using Domain.Interfaces;
 
-namespace Domain.Interfaces;
+namespace Application.Interfaces;
 
 public interface IAlbumRepository : IRepositoryBase<Album>
 {

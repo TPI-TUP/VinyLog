@@ -8,13 +8,16 @@ public class UserDto
     public string Username { get; set; }
     public string Email { get; set; }
 
+    public Role Role { get; set; }
+
     public static UserDto Create(User user)
     {
-        var dto = new UserDto();
-        dto.Id = user.Id;
-        dto.Username = user.Username;
-        dto.Email = user.Email;
-
-        return dto;
+        return new UserDto
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Email = user.Email,
+            Role = user.Role
+        };
     }
 }

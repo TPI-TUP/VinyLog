@@ -1,16 +1,17 @@
-using Domain.Entities;
+using Application.Models;
+using Application.Models.Requests;
 
 namespace Application.Interfaces;
 
 public interface IUserService
 {
-    Task<User> CreateUserAsync(User userRequest);
+    Task<UserDto> CreateUserAsync(CreateUserDto userRequest);
 
-    Task<List<User>> GetAllAsync();
+    Task<List<UserDto>> GetAllAsync();
 
-    Task<User> GetUserAsync(int id);
+    Task<UserDto> GetUserAsync(int id);
 
-    Task<User> UpdateUserAsync(int id, User updatedUser);
+    Task<UserDto> UpdateUserAsync(int id, UpdateUserDto updatedUser);
 
     Task DeleteUserAsync(int id);
 }
